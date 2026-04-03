@@ -378,10 +378,11 @@ function handleCSV(input) {
 function parseRedfin(csv) {
   const allLines = csv.split('\n').map(l=>l.trim()).filter(l=>l);
   const headers  = parseCSVRow(allLines[0]).map(h=>h.toUpperCase().trim());
-  const dataLines = allLines.slice(2);
+  // Skip the MLS disclaimer row (row index 1) — it starts with "In accordance"
+  const dataLines = allLines.slice(1).filter(l => !l.toLowerCase().startsWith('"in accordance'));
 
   const col = name => headers.indexOf(name);
-  const SALE_TYPE=col('SALE TYPE'), SOLD_DATE=col('SOLD DATE'), PRICE_COL=col('PRICE');
+  const SOLD_DATE=col('SOLD DATE'), PRICE_COL=col('PRICE');
   const STATUS=col('STATUS'), LOCATION=col('LOCATION'), PROP_TYPE=col('PROPERTY TYPE');
 
   if (PRICE_COL<0) { alert('Could not read this CSV — make sure it\'s a Redfin export.'); return; }
@@ -402,17 +403,21 @@ function parseRedfin(csv) {
     if (isNaN(price)) return;
     const bandIdx = BAND_RANGES.findIndex(([lo,hi])=>price>=lo&&price<hi);
     if (bandIdx<0) return;
-    const saleType = (cols[SALE_TYPE]||'').trim().toUpperCase();
-    const status   = (cols[STATUS]||'').trim().toLowerCase();
-    if (saleType==='MLS LISTING') {
-      if (status==='active') { counts[bandIdx].active++; total++; }
-      else if (status.includes('pending')||status.includes('contingent')) { counts[bandIdx].pendings++; total++; }
-    } else if (saleType==='PAST SALE'||status.includes('sold')) {
+
+    // Use STATUS as the primary signal — Redfin sometimes puts pendings under PAST SALE
+    const status = (cols[STATUS]||'').trim().toLowerCase();
+    if (status==='active') {
+      counts[bandIdx].active++; total++;
+    } else if (status.includes('pending')||status.includes('contingent')) {
+      counts[bandIdx].pendings++; total++;
+    } else if (status==='sold') {
       const soldStr = (cols[SOLD_DATE]||'').trim();
       if (soldStr) {
-        const soldDate = new Date(soldStr.replace(/-/g,' '));
+        // Handle "January-30-2026" or "January-30-2026 03:00 PM" formats
+        const datePart = soldStr.split(' ')[0].replace(/-/g,' ');
+        const soldDate = new Date(datePart);
         if (!isNaN(soldDate)&&soldDate>=cutoff) { counts[bandIdx].sales3mo++; total++; }
-      } else { counts[bandIdx].sales3mo++; total++; }
+      }
     }
   });
 
