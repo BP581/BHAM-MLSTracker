@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bellingham MLS Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f2eb; --surface: #fffdf8; --border: #d8d2c4;
+    --text: #1a1812; --muted: #7a7163; --accent: #2b4a2e;
+    --hot: #8b2318; --hot-bg: #f5e8e6;
+    --warm: #7a4a10; --warm-bg: #f5eedf;
+    --balanced: #2b4a2e; --balanced-bg: #e8f0e8;
+    --cool: #1a3a5c; --cool-bg: #e6eef5;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Mono', monospace; background: var(--bg); color: var(--text); min-height: 100vh; }
+  header { background: var(--accent); color: #fff; padding: 2rem 3rem; display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+  .header-title { font-family: 'Fraunces', serif; font-size: 2rem; font-weight: 300; letter-spacing: -0.02em; line-height: 1.1; }
+  .header-title span { display: block; font-size: 0.85rem; font-family: 'DM Mono', monospace; color: rgba(255,255,255,0.6); letter-spacing: 0.05em; margin-bottom: 0.4rem; text-transform: uppercase; }
+  .header-meta { text-align: right; font-size: 0.75rem; color: rgba(255,255,255,0.6); line-height: 1.8; }
+  .header-meta strong { color: rgba(255,255,255,0.9); }
+  main { padding: 2.5rem 3rem; max-width: 1200px; margin: 0 auto; }
+  .summary-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 2.5rem; }
+  .summary-card { background: var(--surface); padding: 1.5rem; }
+  .summary-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.5rem; }
+  .summary-value { font-family: 'Fraunces', serif; font-size: 2.5rem; font-weight: 300; line-height: 1; color: var(--text); margin-bottom: 0.25rem; }
+  .summary-sub { font-size: 0.7rem; color: var(--muted); }
+  .section-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-bottom: 2.5rem; }
+  thead th { text-align: right; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); padding: 0.6rem 1rem; border-bottom: 2px solid var(--border); background: var(--bg); font-weight: 500; }
+  thead th:first-child { text-align: left; }
+  tbody tr { border-bottom: 1px solid var(--border); }
+  tbody tr:hover { background: rgba(43,74,46,0.04); }
+  tbody tr.total-row { background: var(--surface); border-top: 2px solid var(--border); }
+  td { padding: 0.85rem 1rem; text-align: right; }
+  td:first-child { text-align: left; color: var(--muted); font-size: 0.75rem; }
+  tr.total-row td { font-weight: 500; }
+  tr.total-row td:first-child { color: var(--text); }
+  .pill { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 2px; font-size: 0.65rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; }
+  .pill-hot { background: var(--hot-bg); color: var(--hot); }
+  .pill-warm { background: var(--warm-bg); color: var(--warm); }
+  .pill-balanced { background: var(--balanced-bg); color: var(--balanced); }
+  .pill-cool { background: var(--cool-bg); color: var(--cool); }
+  .charts-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem; }
+  .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 1.5rem; }
+  .chart-title { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 1.25rem; }
+  .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .bar-band { font-size: 0.65rem; color: var(--muted); width: 78px; flex-shrink: 0; text-align: right; }
+  .bar-bg { flex: 1; background: var(--bg); border-radius: 1px; height: 12px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 1px; }
+  .bar-val { font-size: 0.7rem; color: var(--text); width: 36px; flex-shrink: 0; text-align: right; }
+  footer { border-top: 1px solid var(--border); padding: 1.5rem 3rem; font-size: 0.7rem; color: var(--muted); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+  @media (max-width: 768px) {
+    header, main, footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+    .charts-grid { grid-template-columns: 1fr; }
+    .header-meta { text-align: left; }
+    thead th:nth-child(n+5), td:nth-child(n+5) { display: none; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-title">
+    <span>Bellingham, WA &mdash; Detached SFH</span>
+    MLS Market Tracker
+  </div>
+  <div class="header-meta">
+    <strong>March 17, 2026</strong><br>
+    Excl. Sudden Valley<br>
+    Data via Airtable
+  </div>
+</header>
+
+<main>
+  <div class="summary-grid" id="summaryGrid"></div>
+  <div class="section-label">By price band — all metrics computed from raw inputs</div>
+  <table>
+    <thead><tr>
+      <th>Price band</th><th>Active</th><th>Pending</th><th>% Pending</th>
+      <th>Sales (3 mo)</th><th>Sales / mo</th><th>Months inventory</th><th>Market</th>
+    </tr></thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+  <div class="charts-grid">
+    <div class="chart-card"><div class="chart-title">Months of inventory by price band</div><div id="invChart"></div></div>
+    <div class="chart-card"><div class="chart-title">% pending by price band</div><div id="pendChart"></div></div>
+  </div>
+</main>
+
+<footer>
+  <span>Bellingham MLS Tracker &mdash; Detached SFH only &mdash; Excl. Sudden Valley</span>
+  <span>Snapshot: March 17, 2026</span>
+</footer>
+
+<script>
+const BANDS = [
+  { label: '$800K\u2013$900K',  active: 15, pendings: 9,  sales3mo: 14 },
+  { label: '$900K\u2013$1M',    active: 10, pendings: 4,  sales3mo: 11 },
+  { label: '$1M\u2013$1.1M',   active: 3,  pendings: 2,  sales3mo: 8  },
+  { label: '$1.1M\u2013$1.2M', active: 4,  pendings: 0,  sales3mo: 4  },
+  { label: '$1.2M\u2013$1.3M', active: 6,  pendings: 1,  sales3mo: 2  },
+  { label: '$1.3M\u2013$1.4M', active: 0,  pendings: 1,  sales3mo: 1  },
+  { label: '$1.4M\u2013$1.5M', active: 1,  pendings: 1,  sales3mo: 2  },
+  { label: '$1.5M\u2013$1.6M', active: 3,  pendings: 1,  sales3mo: 2  },
+  { label: '$1.6M\u2013$1.7M', active: 2,  pendings: 0,  sales3mo: 2  },
+  { label: '$1.7M\u2013$2.0M', active: 6,  pendings: 0,  sales3mo: 1  },
+  { label: '$2.0M\u2013$2.5M', active: 0,  pendings: 0,  sales3mo: 1  },
+];
+
+function market(moi) {
+  if (!isFinite(moi) || moi === 0) return { text: '\u2014', cls: '' };
+  if (moi < 1.5) return { text: "Seller's", cls: 'pill-hot' };
+  if (moi < 3)   return { text: 'Warm seller', cls: 'pill-warm' };
+  if (moi <= 6)  return { text: 'Balanced', cls: 'pill-balanced' };
+  return { text: "Buyer's", cls: 'pill-cool' };
+}
+function fmt(n, dec=1) { return (isFinite(n) && !isNaN(n)) ? n.toFixed(dec) : '\u2014'; }
+
+let totActive=0, totPend=0, totSales=0;
+BANDS.forEach(b => { totActive+=b.active; totPend+=b.pendings; totSales+=b.sales3mo; });
+const totPerMo = totSales/3;
+const totMoi   = totPerMo > 0 ? totActive/totPerMo : Infinity;
+const totPct   = (totActive+totPend) > 0 ? totPend/(totActive+totPend)*100 : 0;
+const mk = market(totMoi);
+
+document.getElementById('summaryGrid').innerHTML = [
+  { label: 'Active listings',     value: totActive,       sub: 'all price bands' },
+  { label: 'Pending',             value: totPend,          sub: fmt(totPct,0)+'% of market' },
+  { label: 'Sales / month',       value: fmt(totPerMo),    sub: 'trailing 3-month avg' },
+  { label: 'Months of inventory', value: fmt(totMoi),      sub: mk.text+' conditions' },
+].map(d => `<div class="summary-card"><div class="summary-label">${d.label}</div><div class="summary-value">${d.value}</div><div class="summary-sub">${d.sub}</div></div>`).join('');
+
+document.getElementById('tableBody').innerHTML = BANDS.map(b => {
+  const perMo = b.sales3mo/3, moi = perMo>0 ? b.active/perMo : Infinity;
+  const total = b.active+b.pendings, pct = total>0 ? b.pendings/total*100 : 0;
+  const mk2 = market(moi);
+  return `<tr><td>${b.label}</td><td>${b.active}</td><td>${b.pendings}</td><td>${fmt(pct,0)}%</td><td>${b.sales3mo}</td><td>${fmt(perMo)}</td><td>${isFinite(moi)?fmt(moi):'\u2014'}</td><td>${mk2.cls?`<span class="pill ${mk2.cls}">${mk2.text}</span>`:'\u2014'}</td></tr>`;
+}).join('') + `<tr class="total-row"><td>All bands</td><td>${totActive}</td><td>${totPend}</td><td>${fmt(totPct,0)}%</td><td>${totSales}</td><td>${fmt(totPerMo)}</td><td>${fmt(totMoi)}</td><td>${mk.cls?`<span class="pill ${mk.cls}">${mk.text}</span>`:'\u2014'}</td></tr>`;
+
+const maxMoi = Math.max(...BANDS.map(b => { const p=b.sales3mo/3; return p>0?b.active/p:0; }));
+const maxPct = Math.max(...BANDS.map(b => { const t=b.active+b.pendings; return t>0?b.pendings/t*100:0; }));
+
+document.getElementById('invChart').innerHTML = BANDS.map(b => {
+  const p=b.sales3mo/3, moi=p>0?b.active/p:0, pct=maxMoi>0?moi/maxMoi*100:0;
+  const col=moi<1.5?'#8b2318':moi<3?'#7a4a10':moi<=6?'#2b4a2e':'#1a3a5c';
+  return `<div class="bar-row"><div class="bar-band">${b.label.replace('$','')}</div><div class="bar-bg"><div class="bar-fill" style="width:${pct.toFixed(1)}%;background:${col}"></div></div><div class="bar-val">${moi>0?fmt(moi):'\u2014'}</div></div>`;
+}).join('');
+
+document.getElementById('pendChart').innerHTML = BANDS.map(b => {
+  const t=b.active+b.pendings, pctVal=t>0?b.pendings/t*100:0, pct=maxPct>0?pctVal/maxPct*100:0;
+  return `<div class="bar-row"><div class="bar-band">${b.label.replace('$','')}</div><div class="bar-bg"><div class="bar-fill" style="width:${pct.toFixed(1)}%;background:#2b4a2e"></div></div><div class="bar-val">${fmt(pctVal,0)}%</div></div>`;
+}).join('');
+</script>
+</body>
+</html>
