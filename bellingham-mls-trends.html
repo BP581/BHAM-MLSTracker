@@ -86,6 +86,10 @@ footer { border-top: 1px solid var(--border); padding: 1rem 2.5rem; font-size: 0
     </div>
   </div>
   <div class="header-actions">
+    <a href="index.html" style="display:flex;align-items:center;gap:6px;padding:0.45rem 1rem;border:1.5px solid rgba(255,255,255,0.4);border-radius:7px;color:#fff;font-size:0.78rem;font-weight:500;text-decoration:none;" onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='transparent'">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Dashboard
+    </a>
     <span class="snapshot-count" id="snapCount">2 snapshots</span>
     <button class="btn-upload" onclick="document.getElementById('csvInput').click()">&#8593;&nbsp; Add Redfin CSV</button>
     <input type="file" id="csvInput" accept=".csv" onchange="handleCSV(this)">
