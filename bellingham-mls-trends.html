@@ -158,14 +158,6 @@ footer { border-top: 1px solid var(--border); padding: 1rem 2.5rem; font-size: 0
 </footer>
 
 <script>
-// Baked-in GitHub credentials — must match index.html.
-// Leave token empty ('') to fall back to per-device localStorage settings.
-const BAKED_GH = {
-  repo:   'bp581/BHAM-MLSTracker',
-  branch: 'main',
-  token:  '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'
-};
-
 const DATA_URL = 'data.json';
 const STORAGE_KEY = 'mls_tracker_v2';
 const GH_KEY = 'mls_tracker_gh_v1';
@@ -194,9 +186,6 @@ function cacheData(d) { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
 
 // ── GITHUB ─────────────────────────────────────────────
 function loadGhSettings() {
-  if (BAKED_GH.token && BAKED_GH.token.length > 0) {
-    return { ...BAKED_GH, baked: true };
-  }
   try { const r = localStorage.getItem(GH_KEY); return r ? JSON.parse(r) : null; }
   catch(e) { return null; }
 }
