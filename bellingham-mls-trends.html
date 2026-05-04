@@ -14,6 +14,8 @@
   --accent: #1f3d22; --accent2: #2e5733; --accent-light: #eaf2eb;
   --blue-info: #1a4a7a; --blue-info-bg: #eef4fb;
   --green-ok: #1f4a22; --green-ok-bg: #eaf4eb;
+  --warn: #7a4a16; --warn-bg: #fdf4e7;
+  --err: #7a1f16; --err-bg: #fdf0ee;
   --c1: #2563a8; --c2: #d97706; --c3: #7c3aed;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -28,6 +30,7 @@ header { background: var(--accent); color: #fff; padding: 1.25rem 2.5rem; displa
 .header-actions { display: flex; align-items: center; gap: 0.75rem; }
 .btn-upload { padding: 0.45rem 1rem; border: 1.5px solid rgba(255,255,255,0.4); border-radius: 7px; background: transparent; color: #fff; font-family: 'Inter', sans-serif; font-size: 0.78rem; font-weight: 500; cursor: pointer; transition: all 0.15s; }
 .btn-upload:hover { background: rgba(255,255,255,0.15); }
+.btn-upload:disabled { opacity: 0.5; cursor: not-allowed; }
 .snapshot-count { font-size: 0.72rem; color: rgba(255,255,255,0.55); }
 #csvInput { display: none; }
 
@@ -36,7 +39,11 @@ main { padding: 2rem 2.5rem; max-width: 1200px; margin: 0 auto; }
 .info-box { border-radius: 8px; padding: 0.85rem 1.1rem; font-size: 0.78rem; line-height: 1.6; margin-bottom: 1.75rem; }
 .info-box.blue { background: var(--blue-info-bg); border: 1px solid #b8d0ea; color: var(--blue-info); }
 .info-box.green { background: var(--green-ok-bg); border: 1px solid #a0c8a4; color: var(--green-ok); display: none; }
+.info-box.warn { background: var(--warn-bg); border: 1px solid #e0c090; color: var(--warn); display: none; }
+.info-box.err { background: var(--err-bg); border: 1px solid #e0a090; color: var(--err); display: none; }
 .info-box strong { font-weight: 600; }
+.btn-secondary { padding: 0.4rem 0.85rem; border: 1.5px solid var(--border2); border-radius: 7px; background: var(--surface); color: var(--text2); font-family: 'Inter', sans-serif; font-size: 0.78rem; font-weight: 500; cursor: pointer; }
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
 
 .legend { display: flex; gap: 1.5rem; margin-bottom: 1.75rem; flex-wrap: wrap; }
 .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--text2); font-weight: 500; }
@@ -51,8 +58,6 @@ main { padding: 2rem 2.5rem; max-width: 1200px; margin: 0 auto; }
 .snapshots-section { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 2rem; }
 .snapshots-header { padding: 0.85rem 1.25rem; background: var(--surface2); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
 .snapshots-header span { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text3); }
-.btn-clear { padding: 0.3rem 0.75rem; border: 1px solid var(--border2); border-radius: 5px; background: transparent; color: var(--text3); font-family: 'Inter', sans-serif; font-size: 0.72rem; cursor: pointer; }
-.btn-clear:hover { border-color: #c0392b; color: #c0392b; }
 .snapshots-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
 .snapshots-table th { text-align: left; font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); padding: 0.6rem 1.25rem; border-bottom: 1px solid var(--border); background: var(--surface2); }
 .snapshots-table th:not(:first-child) { text-align: right; }
@@ -90,17 +95,19 @@ footer { border-top: 1px solid var(--border); padding: 1rem 2.5rem; font-size: 0
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       Dashboard
     </a>
-    <span class="snapshot-count" id="snapCount">2 snapshots</span>
-    <button class="btn-upload" onclick="document.getElementById('csvInput').click()">&#8593;&nbsp; Add Redfin CSV</button>
+    <span class="snapshot-count" id="snapCount">— snapshots</span>
+    <button class="btn-upload" id="addCsvBtn" onclick="document.getElementById('csvInput').click()">&#8593;&nbsp; Add Redfin CSV</button>
     <input type="file" id="csvInput" accept=".csv" onchange="handleCSV(this)">
   </div>
 </header>
 
 <main>
   <div class="info-box blue" id="infoBox">
-    <strong>How to add more snapshots:</strong> Download a Redfin CSV the same way as usual (Bellingham WA → Houses → List view → Download All) and click "Add Redfin CSV" above. Each upload adds a new data point to all four charts. Data is saved in your browser.
+    <strong>How to add more snapshots:</strong> Download a Redfin CSV (Bellingham WA &rarr; Houses &rarr; List view &rarr; Download All) and click "Add Redfin CSV". The new snapshot is added to <code>data.json</code> in your repo via GitHub. Make sure GitHub sync is configured on the dashboard's Update Data tab first.
   </div>
   <div class="info-box green" id="successBox"></div>
+  <div class="info-box warn" id="warnBox"></div>
+  <div class="info-box err" id="errBox"></div>
 
   <div class="legend">
     <div class="legend-item"><div class="legend-dot" style="background:var(--c1)"></div>$800K – $1.3M</div>
@@ -134,7 +141,6 @@ footer { border-top: 1px solid var(--border); padding: 1rem 2.5rem; font-size: 0
   <div class="snapshots-section">
     <div class="snapshots-header">
       <span>Snapshot history</span>
-      <button class="btn-clear" onclick="clearData()">Clear all</button>
     </div>
     <table class="snapshots-table">
       <thead><tr>
@@ -152,33 +158,75 @@ footer { border-top: 1px solid var(--border); padding: 1rem 2.5rem; font-size: 0
 </footer>
 
 <script>
-const STORAGE_KEY = 'mls_trends_v1';
+const DATA_URL = 'data.json';
+const STORAGE_KEY = 'mls_tracker_v2';
+const GH_KEY = 'mls_tracker_gh_v1';
+
 const BRACKETS = [
   { name: '$800K–$1.3M', lo: 800000,  hi: 1300000, color: '#2563a8', tagCls: 'tag-1' },
   { name: '$1.3M–$1.7M', lo: 1300000, hi: 1700000, color: '#d97706', tagCls: 'tag-2' },
   { name: '$1.7M–$2.5M', lo: 1700000, hi: 2500000, color: '#7c3aed', tagCls: 'tag-3' },
 ];
 
-// ── SEED DATA from your two existing CSVs ──────────────
-const SEED = [
-  { date: '2026-03-26', b0: {active:35,pendings:19,sales3mo:35}, b1: {active:5,pendings:2,sales3mo:10}, b2: {active:8,pendings:1,sales3mo:2} },
-  { date: '2026-04-03', b0: {active:32,pendings:20,sales3mo:39}, b1: {active:6,pendings:1,sales3mo:11}, b2: {active:6,pendings:1,sales3mo:2} },
-];
+// In-memory copy of data.json
+let DATA = null;
 
-// ── STORAGE ────────────────────────────────────────────
-function loadSnapshots() {
+// ── DATA LOAD ──────────────────────────────────────────
+async function fetchDataJson() {
+  const url = DATA_URL + '?t=' + Date.now();
+  const r = await fetch(url, { cache: 'no-store' });
+  if (!r.ok) throw new Error('fetch failed: ' + r.status);
+  return await r.json();
+}
+function loadCachedData() {
+  try { const r = localStorage.getItem(STORAGE_KEY); return r ? JSON.parse(r) : null; }
+  catch(e) { return null; }
+}
+function cacheData(d) { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
+
+// ── GITHUB ─────────────────────────────────────────────
+function loadGhSettings() {
+  try { const r = localStorage.getItem(GH_KEY); return r ? JSON.parse(r) : null; }
+  catch(e) { return null; }
+}
+
+async function pushToGitHub() {
+  const s = loadGhSettings();
+  if (!s || !s.repo || !s.token) {
+    return { ok: false, error: 'GitHub sync not configured. Open the Dashboard → Update Data tab and configure GitHub sync first.' };
+  }
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : SEED;
-  } catch(e) { return SEED; }
-}
-function saveSnapshots(snaps) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(snaps));
-}
-function clearData() {
-  if (!confirm('Clear all snapshots and reset to the two original dates?')) return;
-  saveSnapshots(SEED);
-  renderAll(SEED);
+    const getUrl = `https://api.github.com/repos/${s.repo}/contents/${DATA_URL}?ref=${encodeURIComponent(s.branch||'main')}`;
+    let sha = null;
+    const getResp = await fetch(getUrl, { headers: { 'Authorization': 'Bearer ' + s.token, 'Accept': 'application/vnd.github+json' } });
+    if (getResp.ok) {
+      const meta = await getResp.json();
+      sha = meta.sha;
+    } else if (getResp.status !== 404) {
+      const body = await getResp.text();
+      return { ok: false, error: `GET failed (${getResp.status}): ${body.slice(0,200)}` };
+    }
+    const content = JSON.stringify(DATA, null, 2) + '\n';
+    const b64 = btoa(unescape(encodeURIComponent(content)));
+    const putBody = {
+      message: `Add trend snapshot for ${DATA.snapshots[DATA.snapshots.length-1].date}`,
+      content: b64,
+      branch: s.branch || 'main'
+    };
+    if (sha) putBody.sha = sha;
+    const putResp = await fetch(`https://api.github.com/repos/${s.repo}/contents/${DATA_URL}`, {
+      method: 'PUT',
+      headers: { 'Authorization': 'Bearer ' + s.token, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(putBody)
+    });
+    if (!putResp.ok) {
+      const body = await putResp.text();
+      return { ok: false, error: `PUT failed (${putResp.status}): ${body.slice(0,200)}` };
+    }
+    return { ok: true };
+  } catch(e) {
+    return { ok: false, error: 'Network error: ' + e.message };
+  }
 }
 
 // ── COMPUTED METRICS ───────────────────────────────────
@@ -221,22 +269,20 @@ function initCharts(snaps) {
   const labels = snaps.map(s => s.date);
 
   const configs = [
-    { id: 'chartPct',    valueFn: b => metrics(b).pctPend,  suffix: '%', yLabel: '% Pending' },
-    { id: 'chartActive', valueFn: b => b.active,             suffix: '',  yLabel: 'Listings' },
-    { id: 'chartPend',   valueFn: b => b.pendings,           suffix: '',  yLabel: 'Pendings' },
-    { id: 'chartMOI',    valueFn: b => metrics(b).moi,       suffix: ' mo', yLabel: 'Months' },
+    { id: 'chartPct',    valueFn: b => metrics(b).pctPend,  suffix: '%' },
+    { id: 'chartActive', valueFn: b => b.active,             suffix: ''  },
+    { id: 'chartPend',   valueFn: b => b.pendings,           suffix: ''  },
+    { id: 'chartMOI',    valueFn: b => metrics(b).moi,       suffix: ' mo' },
   ];
 
-  configs.forEach(({ id, valueFn, suffix, yLabel }) => {
+  configs.forEach(({ id, valueFn, suffix }) => {
     if (charts[id]) charts[id].destroy();
     const ctx = document.getElementById(id).getContext('2d');
     charts[id] = new Chart(ctx, {
       type: 'line',
       data: {
         labels,
-        datasets: BRACKETS.map((br, i) =>
-          makeDataset(snaps, 'b'+i, valueFn, br.color)
-        )
+        datasets: BRACKETS.map((br, i) => makeDataset(snaps, 'b'+i, valueFn, br.color))
       },
       options: {
         ...CHART_DEFAULTS,
@@ -244,15 +290,12 @@ function initCharts(snaps) {
           ...CHART_DEFAULTS.scales,
           y: {
             ...CHART_DEFAULTS.scales.y,
-            ticks: { ...CHART_DEFAULTS.scales.y.ticks,
-              callback: v => v + suffix
-            },
-            title: { display: false }
+            ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => v + suffix }
           },
           x: {
             ...CHART_DEFAULTS.scales.x,
             ticks: { ...CHART_DEFAULTS.scales.x.ticks,
-              callback: function(val, idx) {
+              callback: function(val) {
                 const d = new Date(this.getLabelForValue(val)+'T12:00:00');
                 return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
               }
@@ -264,11 +307,9 @@ function initCharts(snaps) {
   });
 }
 
-// ── SNAPSHOT TABLE ─────────────────────────────────────
 function renderTable(snaps) {
   const tbody = document.getElementById('snapshotBody');
   const rows = [];
-  // Sort by date desc
   const sorted = [...snaps].sort((a,b) => b.date.localeCompare(a.date));
   sorted.forEach(s => {
     BRACKETS.forEach((br, i) => {
@@ -318,7 +359,7 @@ function handleCSV(input) {
   reader.readAsText(file);
 }
 
-function parseRedfin(csv, filename) {
+async function parseRedfin(csv, filename) {
   const allLines = csv.split('\n').map(l=>l.trim()).filter(l=>l);
   const headers  = parseCSVRow(allLines[0]).map(h=>h.toUpperCase().trim());
   const dataLines = allLines.slice(1).filter(l => !l.toLowerCase().startsWith('"in accordance'));
@@ -329,15 +370,12 @@ function parseRedfin(csv, filename) {
 
   if (PRICE_COL<0) { alert('Could not read this file as a Redfin CSV.'); return; }
 
-  // Infer snapshot date from filename (redfin_YYYY-M_D_YY or redfin_YYYY-MM-DD)
+  // Infer snapshot date from filename, fall back to today
   let snapDate = new Date().toISOString().slice(0,10);
-  const match = filename.match(/(\d{4})-(\d{1,2})[_-](\d{1,2})[_-](\d{2,4})/);
+  const match = filename.match(/(\d{4})-(\d{1,2})[_-](\d{1,2})/);
   if (match) {
-    const [_, y, m, d, y2] = match;
-    const year = y2.length===2 ? '20'+y2 : y2;
-    snapDate = `${year}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
-    // Handle redfin_2026-03-26 format (already correct)
-    if (parseInt(y) > 2000) snapDate = `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
+    const [_, y, m, d] = match;
+    snapDate = `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
   }
 
   const cutoff = new Date(snapDate); cutoff.setDate(cutoff.getDate()-92);
@@ -362,29 +400,81 @@ function parseRedfin(csv, filename) {
     else if (status.includes('pending')||status.includes('contingent')) { counts[bidx].pendings++; total++; }
     else if (status==='sold' && soldStr) {
       try {
-        const soldDate = new Date(soldStr.split(' ')[0].replace(/-/g,' '));
+        const datePart = soldStr.split(' ')[0].replace(/-/g,' ');
+        const soldDate = new Date(datePart);
         if (!isNaN(soldDate) && soldDate>=cutoff) { counts[bidx].sales3mo++; total++; }
       } catch(e) {}
     }
   });
 
-  const snaps = loadSnapshots();
-  // Replace if same date already exists
-  const existingIdx = snaps.findIndex(s=>s.date===snapDate);
+  // Update DATA in memory
   const newSnap = { date: snapDate, b0: counts[0], b1: counts[1], b2: counts[2] };
-  if (existingIdx>=0) snaps[existingIdx] = newSnap;
-  else snaps.push(newSnap);
-  saveSnapshots(snaps);
-  renderAll(snaps);
+  const idx = DATA.snapshots.findIndex(s=>s.date===snapDate);
+  if (idx>=0) DATA.snapshots[idx] = newSnap;
+  else DATA.snapshots.push(newSnap);
+  DATA.updated = new Date().toISOString();
+
+  cacheData(DATA);
+  renderAll(DATA.snapshots);
+
+  // Hide notices
+  document.getElementById('infoBox').style.display='none';
+  document.getElementById('warnBox').style.display='none';
+  document.getElementById('errBox').style.display='none';
 
   const box = document.getElementById('successBox');
   box.style.display='block';
-  box.innerHTML=`<strong>&#10003; Snapshot added for ${snapDate}!</strong> Found ${total} properties across the three brackets${excluded>0?` — ${excluded} Sudden Valley listing${excluded>1?'s':''} excluded`:''}. Charts updated.`;
-  document.getElementById('infoBox').style.display='none';
+  box.innerHTML=`<strong>&#10003; Snapshot parsed for ${snapDate}.</strong> Found ${total} properties${excluded>0?` — ${excluded} Sudden Valley listing${excluded>1?'s':''} excluded`:''}. Pushing to GitHub…`;
+
+  const btn = document.getElementById('addCsvBtn');
+  btn.disabled = true;
+
+  const result = await pushToGitHub();
+  btn.disabled = false;
+
+  if (result.ok) {
+    box.innerHTML=`<strong>&#10003; Snapshot for ${snapDate} added &amp; pushed to GitHub.</strong> ${total} properties counted${excluded>0?` (${excluded} excluded)`:''}.`;
+  } else {
+    box.style.display='none';
+    const warn = document.getElementById('warnBox');
+    warn.style.display='block';
+    warn.innerHTML=`<strong>Snapshot saved locally, but GitHub push failed.</strong> ${result.error}
+      <br><button class="btn-secondary" style="margin-top:0.5rem;" onclick="retryPush()">Retry push</button>`;
+  }
+}
+
+async function retryPush() {
+  const warn = document.getElementById('warnBox');
+  warn.innerHTML = 'Retrying…';
+  const result = await pushToGitHub();
+  if (result.ok) {
+    warn.style.display='none';
+    const ok = document.getElementById('successBox');
+    ok.style.display='block';
+    ok.innerHTML='<strong>&#10003; Pushed to GitHub.</strong>';
+  } else {
+    warn.innerHTML = `<strong>Push failed again.</strong> ${result.error}
+      <br><button class="btn-secondary" style="margin-top:0.5rem;" onclick="retryPush()">Retry</button>`;
+  }
 }
 
 // ── INIT ───────────────────────────────────────────────
-renderAll(loadSnapshots());
+async function init() {
+  try {
+    DATA = await fetchDataJson();
+  } catch(e) {
+    console.warn('data.json fetch failed, using cache', e);
+    DATA = loadCachedData() || { snapshots: [] };
+    const errBox = document.getElementById('errBox');
+    errBox.style.display = 'block';
+    errBox.innerHTML = '<strong>Could not load data.json from the server.</strong> Showing cached data from this browser.';
+  }
+  if (!Array.isArray(DATA.snapshots)) DATA.snapshots = [];
+  cacheData(DATA);
+  renderAll(DATA.snapshots);
+}
+
+init();
 </script>
 </body>
 </html>
