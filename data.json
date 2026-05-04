@@ -1,65 +1,84 @@
 {
   "version": 1,
-  "updated": "2026-05-04T20:28:49.469Z",
+  "updated": "2026-05-04T20:31:46.221Z",
   "dashboard": {
-    "date": "2026-05-04",
+    "date": "2026-04-09",
     "bands": [
       {
-        "active": 0,
+        "active": 12,
+        "pendings": 8,
+        "sales3mo": 14
+      },
+      {
+        "active": 5,
+        "pendings": 8,
+        "sales3mo": 9
+      },
+      {
+        "active": 3,
+        "pendings": 1,
+        "sales3mo": 8
+      },
+      {
+        "active": 6,
+        "pendings": 0,
+        "sales3mo": 3
+      },
+      {
+        "active": 7,
+        "pendings": 1,
+        "sales3mo": 1
+      },
+      {
+        "active": 1,
+        "pendings": 0,
+        "sales3mo": 3
+      },
+      {
+        "active": 1,
+        "pendings": 1,
+        "sales3mo": 2
+      },
+      {
+        "active": 3,
+        "pendings": 0,
+        "sales3mo": 2
+      },
+      {
+        "active": 1,
+        "pendings": 0,
+        "sales3mo": 2
+      },
+      {
+        "active": 5,
         "pendings": 0,
         "sales3mo": 0
       },
       {
-        "active": 0,
+        "active": 1,
         "pendings": 0,
-        "sales3mo": 0
-      },
-      {
-        "active": 0,
-        "pendings": 0,
-        "sales3mo": 0
-      },
-      {
-        "active": 0,
-        "pendings": 0,
-        "sales3mo": 0
-      },
-      {
-        "active": 0,
-        "pendings": 0,
-        "sales3mo": 0
-      },
-      {
-        "active": 0,
-        "pendings": 0,
-        "sales3mo": 0
-      },
-      {
-        "active": 0,
-        "pendings": 0,
-        "sales3mo": 0
-      },
-      {
-        "active": 0,
-        "pendings": 0,
-        "sales3mo": 0
-      },
-      {
-        "active": 0,
-        "pendings": 0,
-        "sales3mo": 0
-      },
-      {
-        "active": 0,
-        "pendings": 0,
-        "sales3mo": 0
-      },
-      {
-        "active": 0,
-        "pendings": 0,
-        "sales3mo": 0
+        "sales3mo": 1
       }
     ]
   },
-  "snapshots": []
+  "snapshots": [
+    {
+      "date": "2026-04-09",
+      "b0": {
+        "active": 33,
+        "pendings": 18,
+        "sales3mo": 35
+      },
+      "b1": {
+        "active": 6,
+        "pendings": 1,
+        "sales3mo": 9
+      },
+      "b2": {
+        "active": 6,
+        "pendings": 0,
+        "sales3mo": 1
+      }
+    }
+  ]
 }
