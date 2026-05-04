@@ -279,9 +279,18 @@ footer { border-top: 1px solid var(--border); padding: 1rem 2.5rem; font-size: 0
 
 <script>
 // ── CONFIG ──────────────────────────────────────────────
+// Baked-in GitHub credentials. If token is non-empty, these are used
+// directly and the GitHub sync panel becomes read-only.
+// Leave token empty ('') to fall back to per-device localStorage settings.
+const BAKED_GH = {
+  repo:   'bp581/BHAM-MLSTracker',
+  branch: 'main',
+  token:  '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'
+};
+
 const DATA_URL    = 'data.json';
 const STORAGE_KEY = 'mls_tracker_v2';   // local cache fallback
-const GH_KEY      = 'mls_tracker_gh_v1'; // github settings
+const GH_KEY      = 'mls_tracker_gh_v1'; // github settings (used only if BAKED_GH.token is empty)
 
 const BANDS = [
   '$800K–$900K','$900K–$1M','$1M–$1.1M','$1.1M–$1.2M','$1.2M–$1.3M',
@@ -314,6 +323,10 @@ let DATA = null;
 
 // ── GITHUB SETTINGS ─────────────────────────────────────
 function loadGhSettings() {
+  // Prefer baked-in config if a token is hardcoded
+  if (BAKED_GH.token && BAKED_GH.token.length > 0) {
+    return { ...BAKED_GH, baked: true };
+  }
   try {
     const r = localStorage.getItem(GH_KEY);
     return r ? JSON.parse(r) : { repo: 'bp581/BHAM-MLSTracker', branch: 'main', token: '' };
@@ -673,9 +686,19 @@ function applyGhSettingsToForm() {
   const s = loadGhSettings();
   document.getElementById('ghRepo').value = s.repo || '';
   document.getElementById('ghBranch').value = s.branch || 'main';
-  document.getElementById('ghToken').value = s.token || '';
-  if (s.token && s.repo) setGhStatus('warn', 'configured — click Test connection');
-  else setGhStatus('unknown', 'click to configure');
+  document.getElementById('ghToken').value = s.token ? '••••••••••••••••' : '';
+
+  if (s.baked) {
+    // Lock the fields — config is hardcoded
+    ['ghRepo','ghBranch','ghToken'].forEach(id => document.getElementById(id).disabled = true);
+    setGhStatus('ok', 'using baked-in token (' + s.repo + ')');
+    const help = document.querySelector('.gh-help');
+    if (help) help.innerHTML = 'GitHub credentials are hardcoded in this HTML file. To rotate the token, edit <code>BAKED_GH</code> at the top of the &lt;script&gt; tag and re-push.';
+  } else if (s.token && s.repo) {
+    setGhStatus('warn', 'configured — click Test connection');
+  } else {
+    setGhStatus('unknown', 'click to configure');
+  }
 }
 
 async function init() {
