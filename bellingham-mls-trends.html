@@ -195,16 +195,25 @@ async function pushToGitHub() {
   if (!s || !s.repo || !s.token) {
     return { ok: false, error: 'GitHub sync not configured. Open the Dashboard → Update Data tab and configure GitHub sync first.' };
   }
-  try {
-    const getUrl = `https://api.github.com/repos/${s.repo}/contents/${DATA_URL}?ref=${encodeURIComponent(s.branch||'main')}`;
+
+  const attempt = async () => {
+    // Cache-bust the SHA fetch to avoid stale 409s
+    const getUrl = `https://api.github.com/repos/${s.repo}/contents/${DATA_URL}?ref=${encodeURIComponent(s.branch||'main')}&t=${Date.now()}`;
     let sha = null;
-    const getResp = await fetch(getUrl, { headers: { 'Authorization': 'Bearer ' + s.token, 'Accept': 'application/vnd.github+json' } });
+    const getResp = await fetch(getUrl, {
+      cache: 'no-store',
+      headers: {
+        'Authorization': 'Bearer ' + s.token,
+        'Accept': 'application/vnd.github+json',
+        'If-None-Match': ''
+      }
+    });
     if (getResp.ok) {
       const meta = await getResp.json();
       sha = meta.sha;
     } else if (getResp.status !== 404) {
       const body = await getResp.text();
-      return { ok: false, error: `GET failed (${getResp.status}): ${body.slice(0,200)}` };
+      return { ok: false, error: `GET failed (${getResp.status}): ${body.slice(0,200)}`, status: getResp.status };
     }
     const content = JSON.stringify(DATA, null, 2) + '\n';
     const b64 = btoa(unescape(encodeURIComponent(content)));
@@ -221,9 +230,18 @@ async function pushToGitHub() {
     });
     if (!putResp.ok) {
       const body = await putResp.text();
-      return { ok: false, error: `PUT failed (${putResp.status}): ${body.slice(0,200)}` };
+      return { ok: false, error: `PUT failed (${putResp.status}): ${body.slice(0,200)}`, status: putResp.status };
     }
     return { ok: true };
+  };
+
+  try {
+    let result = await attempt();
+    if (!result.ok && result.status === 409) {
+      await new Promise(r => setTimeout(r, 800));
+      result = await attempt();
+    }
+    return result;
   } catch(e) {
     return { ok: false, error: 'Network error: ' + e.message };
   }
