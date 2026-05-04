@@ -1,41 +1,41 @@
 {
   "version": 1,
-  "updated": "2026-05-04T20:37:09.776Z",
+  "updated": "2026-05-04T20:37:26.797Z",
   "dashboard": {
-    "date": "2026-04-09",
+    "date": "2026-04-20",
     "bands": [
       {
-        "active": 12,
-        "pendings": 8,
-        "sales3mo": 14
+        "active": 13,
+        "pendings": 6,
+        "sales3mo": 18
       },
       {
-        "active": 5,
+        "active": 7,
         "pendings": 8,
         "sales3mo": 9
       },
       {
         "active": 3,
-        "pendings": 1,
+        "pendings": 2,
         "sales3mo": 8
       },
       {
         "active": 6,
-        "pendings": 0,
+        "pendings": 4,
         "sales3mo": 3
       },
       {
-        "active": 7,
-        "pendings": 1,
+        "active": 5,
+        "pendings": 2,
         "sales3mo": 1
       },
       {
-        "active": 1,
+        "active": 2,
         "pendings": 0,
         "sales3mo": 3
       },
       {
-        "active": 1,
+        "active": 2,
         "pendings": 1,
         "sales3mo": 2
       },
@@ -46,18 +46,18 @@
       },
       {
         "active": 1,
-        "pendings": 0,
-        "sales3mo": 2
+        "pendings": 1,
+        "sales3mo": 3
       },
       {
-        "active": 5,
+        "active": 6,
         "pendings": 0,
         "sales3mo": 0
       },
       {
-        "active": 1,
-        "pendings": 0,
-        "sales3mo": 1
+        "active": 0,
+        "pendings": 1,
+        "sales3mo": 2
       }
     ]
   },
@@ -81,21 +81,21 @@
       }
     },
     {
-      "date": "2026-04-13",
+      "date": "2026-04-20",
       "b0": {
-        "active": 37,
-        "pendings": 18,
-        "sales3mo": 36
+        "active": 34,
+        "pendings": 22,
+        "sales3mo": 39
       },
       "b1": {
-        "active": 6,
-        "pendings": 1,
-        "sales3mo": 9
+        "active": 8,
+        "pendings": 2,
+        "sales3mo": 10
       },
       "b2": {
         "active": 6,
         "pendings": 1,
-        "sales3mo": 1
+        "sales3mo": 2
       }
     }
   ]
