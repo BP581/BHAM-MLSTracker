@@ -1,41 +1,41 @@
 {
   "version": 1,
-  "updated": "2026-07-06T15:47:07.447Z",
+  "updated": "2026-07-13T15:43:27.089Z",
   "dashboard": {
-    "date": "2026-07-06",
+    "date": "2026-07-13",
     "bands": [
       {
-        "active": 22,
+        "active": 25,
+        "pendings": 10,
+        "sales3mo": 25
+      },
+      {
+        "active": 8,
         "pendings": 8,
         "sales3mo": 26
       },
       {
-        "active": 6,
-        "pendings": 8,
-        "sales3mo": 24
-      },
-      {
-        "active": 6,
-        "pendings": 3,
+        "active": 7,
+        "pendings": 2,
         "sales3mo": 9
       },
       {
-        "active": 8,
-        "pendings": 3,
+        "active": 7,
+        "pendings": 4,
         "sales3mo": 9
       },
       {
-        "active": 8,
+        "active": 11,
         "pendings": 2,
         "sales3mo": 1
       },
       {
-        "active": 3,
+        "active": 2,
         "pendings": 1,
         "sales3mo": 7
       },
       {
-        "active": 3,
+        "active": 4,
         "pendings": 0,
         "sales3mo": 1
       },
@@ -45,19 +45,19 @@
         "sales3mo": 6
       },
       {
-        "active": 0,
+        "active": 1,
         "pendings": 0,
-        "sales3mo": 1
+        "sales3mo": 2
       },
       {
-        "active": 12,
+        "active": 11,
         "pendings": 3,
         "sales3mo": 4
       },
       {
         "active": 2,
         "pendings": 0,
-        "sales3mo": 4
+        "sales3mo": 3
       }
     ]
   },
@@ -312,6 +312,24 @@
         "active": 14,
         "pendings": 3,
         "sales3mo": 8
+      }
+    },
+    {
+      "date": "2026-07-13",
+      "b0": {
+        "active": 58,
+        "pendings": 26,
+        "sales3mo": 70
+      },
+      "b1": {
+        "active": 9,
+        "pendings": 1,
+        "sales3mo": 16
+      },
+      "b2": {
+        "active": 13,
+        "pendings": 3,
+        "sales3mo": 7
       }
     }
   ]
