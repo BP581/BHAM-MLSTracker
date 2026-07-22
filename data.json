@@ -1,63 +1,63 @@
 {
   "version": 1,
-  "updated": "2026-07-13T15:43:27.089Z",
+  "updated": "2026-07-22T17:51:57.914Z",
   "dashboard": {
-    "date": "2026-07-13",
+    "date": "2026-07-22",
     "bands": [
       {
-        "active": 25,
+        "active": 22,
         "pendings": 10,
-        "sales3mo": 25
+        "sales3mo": 27
       },
       {
         "active": 8,
         "pendings": 8,
-        "sales3mo": 26
+        "sales3mo": 28
       },
       {
-        "active": 7,
-        "pendings": 2,
+        "active": 8,
+        "pendings": 3,
         "sales3mo": 9
       },
       {
-        "active": 7,
+        "active": 6,
+        "pendings": 5,
+        "sales3mo": 10
+      },
+      {
+        "active": 10,
         "pendings": 4,
-        "sales3mo": 9
-      },
-      {
-        "active": 11,
-        "pendings": 2,
         "sales3mo": 1
       },
       {
-        "active": 2,
+        "active": 1,
         "pendings": 1,
         "sales3mo": 7
       },
       {
         "active": 4,
-        "pendings": 0,
+        "pendings": 2,
         "sales3mo": 1
       },
       {
         "active": 2,
         "pendings": 0,
-        "sales3mo": 6
+        "sales3mo": 5
       },
       {
-        "active": 1,
-        "pendings": 0,
+        "active": 0,
+        "pendings": 1,
         "sales3mo": 2
       },
       {
-        "active": 11,
-        "pendings": 3,
-        "sales3mo": 4
+        "active": 12,
+        "pendings": 1,
+        "sales3mo": 5
       },
       {
-        "active": 2,
-        "pendings": 0,
-        "sales3mo": 3
+        "active": 1,
+        "pendings": 1,
+        "sales3mo": 4
       }
     ]
   },
@@ -330,6 +330,24 @@
         "active": 13,
         "pendings": 3,
         "sales3mo": 7
+      }
+    },
+    {
+      "date": "2026-07-22",
+      "b0": {
+        "active": 54,
+        "pendings": 30,
+        "sales3mo": 75
+      },
+      "b1": {
+        "active": 7,
+        "pendings": 4,
+        "sales3mo": 15
+      },
+      "b2": {
+        "active": 13,
+        "pendings": 2,
+        "sales3mo": 9
       }
     }
   ]
