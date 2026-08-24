@@ -1,48 +1,48 @@
 {
   "version": 1,
-  "updated": "2026-08-17T18:28:46.467Z",
+  "updated": "2026-08-24T17:32:13.673Z",
   "dashboard": {
-    "date": "2026-08-17",
+    "date": "2026-08-24",
     "bands": [
       {
-        "active": 17,
-        "pendings": 7,
+        "active": 18,
+        "pendings": 5,
         "sales3mo": 30
       },
       {
-        "active": 14,
+        "active": 16,
         "pendings": 5,
         "sales3mo": 25
       },
       {
         "active": 7,
-        "pendings": 3,
+        "pendings": 2,
         "sales3mo": 9
       },
       {
-        "active": 6,
+        "active": 5,
         "pendings": 1,
         "sales3mo": 10
       },
       {
-        "active": 9,
+        "active": 10,
         "pendings": 4,
-        "sales3mo": 6
-      },
-      {
-        "active": 1,
-        "pendings": 0,
-        "sales3mo": 6
-      },
-      {
-        "active": 3,
-        "pendings": 2,
-        "sales3mo": 1
+        "sales3mo": 8
       },
       {
         "active": 2,
         "pendings": 0,
         "sales3mo": 5
+      },
+      {
+        "active": 4,
+        "pendings": 1,
+        "sales3mo": 2
+      },
+      {
+        "active": 1,
+        "pendings": 1,
+        "sales3mo": 4
       },
       {
         "active": 3,
@@ -51,13 +51,13 @@
       },
       {
         "active": 9,
-        "pendings": 0,
-        "sales3mo": 7
+        "pendings": 1,
+        "sales3mo": 6
       },
       {
-        "active": 1,
-        "pendings": 1,
-        "sales3mo": 4
+        "active": 2,
+        "pendings": 2,
+        "sales3mo": 5
       }
     ]
   },
@@ -419,6 +419,24 @@
       "b2": {
         "active": 10,
         "pendings": 1,
+        "sales3mo": 11
+      }
+    },
+    {
+      "date": "2026-08-24",
+      "b0": {
+        "active": 56,
+        "pendings": 17,
+        "sales3mo": 82
+      },
+      "b1": {
+        "active": 10,
+        "pendings": 4,
+        "sales3mo": 13
+      },
+      "b2": {
+        "active": 11,
+        "pendings": 3,
         "sales3mo": 11
       }
     }
