@@ -1,41 +1,41 @@
 {
   "version": 1,
-  "updated": "2026-08-24T17:32:13.673Z",
+  "updated": "2026-08-31T16:35:13.587Z",
   "dashboard": {
-    "date": "2026-08-24",
+    "date": "2026-08-31",
     "bands": [
       {
-        "active": 18,
+        "active": 19,
+        "pendings": 6,
+        "sales3mo": 29
+      },
+      {
+        "active": 17,
         "pendings": 5,
-        "sales3mo": 30
+        "sales3mo": 24
       },
       {
-        "active": 16,
-        "pendings": 5,
-        "sales3mo": 25
+        "active": 6,
+        "pendings": 1,
+        "sales3mo": 8
       },
       {
-        "active": 7,
-        "pendings": 2,
-        "sales3mo": 9
-      },
-      {
-        "active": 5,
+        "active": 8,
         "pendings": 1,
         "sales3mo": 10
       },
       {
-        "active": 10,
-        "pendings": 4,
+        "active": 7,
+        "pendings": 6,
         "sales3mo": 8
       },
       {
-        "active": 2,
+        "active": 4,
         "pendings": 0,
-        "sales3mo": 5
+        "sales3mo": 4
       },
       {
-        "active": 4,
+        "active": 3,
         "pendings": 1,
         "sales3mo": 2
       },
@@ -45,19 +45,19 @@
         "sales3mo": 4
       },
       {
-        "active": 3,
+        "active": 2,
         "pendings": 2,
         "sales3mo": 2
       },
       {
-        "active": 9,
-        "pendings": 1,
-        "sales3mo": 6
+        "active": 7,
+        "pendings": 3,
+        "sales3mo": 7
       },
       {
         "active": 2,
         "pendings": 2,
-        "sales3mo": 5
+        "sales3mo": 4
       }
     ]
   },
@@ -437,6 +437,24 @@
       "b2": {
         "active": 11,
         "pendings": 3,
+        "sales3mo": 11
+      }
+    },
+    {
+      "date": "2026-08-31",
+      "b0": {
+        "active": 57,
+        "pendings": 19,
+        "sales3mo": 79
+      },
+      "b1": {
+        "active": 10,
+        "pendings": 4,
+        "sales3mo": 12
+      },
+      "b2": {
+        "active": 9,
+        "pendings": 5,
         "sales3mo": 11
       }
     }
